@@ -6,22 +6,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
+// cart
 app.get("/getCart.json", async (req, res) => {
   const cart = await serverUtils.getCart();
 
   res.status(cart.status).send(cart.res);
-});
-
-app.get("/getItems.json", async (req, res) => {
-  const items = await serverUtils.getItems();
-
-  res.status(items.status).send(items.res);
-});
-
-app.get("/:itemId/getItem.json", async (req, res) => {
-  const item = await serverUtils.getItem(req);
-
-  res.status(item.status).send(item.res);
 });
 
 app.put("/:itemId/:quantity/addToCard.json", async (req, res) => {
@@ -41,6 +30,21 @@ app.get("/getCartTotal.json", async (req, res) => {
 
   res.status(response.status).send(response.res);
 });
+
+// items
+app.get("/getItems.json", async (req, res) => {
+  const items = await serverUtils.getItems();
+
+  res.status(items.status).send(items.res);
+});
+
+app.get("/:itemId/getItem.json", async (req, res) => {
+  const item = await serverUtils.getItem(req);
+
+  res.status(item.status).send(item.res);
+});
+
+// promotion
 
 app.post("/getFree/:itemId/addItemDiscount.json", async (req, res) => {
   const response = await serverUtils.addItemDiscount(req);
