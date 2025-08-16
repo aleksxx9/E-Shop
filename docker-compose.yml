@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_USER: ${SQL_USER}
+      MYSQL_PASSWORD: ${SQL_PW}
+      MYSQL_ROOT_PASSWORD: ${SQL_PW}
+      MYSQL_DATABASE: eShop
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
