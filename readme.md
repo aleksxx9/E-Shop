@@ -16,14 +16,14 @@ Every api can be found in `src/server.ts` file. There are their methods and need
 
 **In this example all api's will be written with localhost, if it's not working it can be replaced with local ip aka `127.0.0.1`. In `.example.env` defined port is 300 so all api's will be also displayed with such port**
 
-## Items requests
+### Items requests
 
 `localhost:300/getItems.json` - shows all available items from items table;
 
 `localhost:300/:itemId/getItems.json` - gets item by itemId;
 **itemId - number;**
 
-## Cart requests
+### Cart requests
 
 `localhost:300/getCart.json` - shows all available items from cart table;
 
@@ -34,7 +34,7 @@ Every api can be found in `src/server.ts` file. There are their methods and need
 `localhost:300/:itemId/deleteItemFromCart.json` - deletes item from cart table;
 **itemId - number**
 
-## Promotions
+### Promotions requests
 
 `localhost:300/getFree/:itemId/addItemDiscount.json` - adds `Buy one get one free` discount to promotions table;
 **itemId - number;**
@@ -47,6 +47,6 @@ Every api can be found in `src/server.ts` file. There are their methods and need
 `localhost:300/:promotionId/deletePromotion.json` - deletes selected promotion by id;
 **promotionId - number**
 
-## Mixed
+### Mixed requests
 
 `localhost:300/getCartTotal.json` - gets all cart items, checks and applies promotions and calculates cart and items totals.
