@@ -8,6 +8,8 @@ Then we need to run database table migrations. There are three tables - cart, it
 
 **Note that only items table populates with mock data**
 
+Then we need to install node packages by running `npm install`
+
 After all comands have been succesfully launched we can finaly start program by running `npm start`
 
 # USAGE
