@@ -17,10 +17,12 @@ con.connect((err) => {
 
   console.log("Succesfully connected to database!");
 
-  const createTable = `CREATE TABLE eShop.cart (
+  const createTable = `CREATE TABLE eShop.promotions (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    itemId INT,
-    quantity INT,
+    itemId INT unique,
+    promotionType varchar(10),
+    promotionPercentage INT,
+    promotionStartingPrice float,
     CONSTRAINT FOREIGN KEY(itemId) REFERENCES items(id)
   );`;
 

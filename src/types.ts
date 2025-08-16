@@ -11,3 +11,19 @@ export interface Item extends RowDataPacket {
   itemId: number;
   price: number;
 }
+
+export interface Promotion extends RowDataPacket {
+  id: number;
+  itemId?: number;
+  promotionType?: string;
+  promotionPercentage?: number;
+  promotionPrice?: number;
+}
+
+export interface Discounts {
+  getFree: number[];
+  percentage: {
+    percentage: number;
+    price: number;
+  }[];
+}
