@@ -98,6 +98,7 @@ export const getCartTotal = async () => {
   try {
     const [cart] = await queryGetCart();
     const cartItems: { [key: string]: number } = {};
+    const itemsTotal: { [id: string]: number } = {};
     let cartTotal = 0;
 
     cart.forEach((item) => {
@@ -113,10 +114,11 @@ export const getCartTotal = async () => {
       }
 
       const itemTotal = (item[0].price * value).toFixed(2);
+      itemsTotal[item[0].id] = Number(itemTotal);
       cartTotal += Number(itemTotal);
     }
 
-    return { status: 200, res: { cartTotal } };
+    return { status: 200, res: { cartTotal, itemsTotal } };
   } catch (err) {
     console.log(err);
 
