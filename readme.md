@@ -16,7 +16,7 @@ After all comands have been succesfully launched we can finaly start program by 
 
 Every api can be found in `src/server.ts` file. There are their methods and needed params:
 
-**In this example all api's will be written with localhost, if it's not working it can be replaced with local ip aka `127.0.0.1`. In `.example.env` defined port is 300 so all api's will be also displayed with such port**
+**In this example all api's will be written with localhost, if it's not working it can be replaced with local ip a.k.a. `127.0.0.1`. In `.example.env` defined port is 300 so all api's will be also displayed with such port**
 
 ### Items requests
 
