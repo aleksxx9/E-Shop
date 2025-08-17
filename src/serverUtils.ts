@@ -147,7 +147,7 @@ export const addItemsToCart = async (req: Request) => {
       } else {
         throw new Error("Incorrect data");
       }
-    } else {
+    } else if (qty > 0) {
       await query.queryInsertCartItem(id, qty);
     }
 
