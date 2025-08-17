@@ -20,10 +20,13 @@ export interface Promotion extends RowDataPacket {
   promotionPrice?: number;
 }
 
-export interface Discounts {
-  getFree: number[];
-  percentage: {
-    percentage: number;
-    price: number;
-  }[];
+export interface JoinedCart extends RowDataPacket {
+  itemId: number;
+  price: number;
+  quantity: number;
+}
+
+export interface DiscountParams {
+  price: number;
+  percentage: number;
 }

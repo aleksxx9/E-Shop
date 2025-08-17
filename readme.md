@@ -4,7 +4,7 @@ To setup firstly .env file needs to be created. You can copy everything from `.e
 
 After .env is setup we can build and run mySql database in docker image by running `docker compose up -d mysql` command.
 
-Then we need to run database table migrations. There are three tables - cart, items and promotions. Each table has it's migration that needs to be run: `ts-node migrations/cart.ts`, `ts-node migrations/items.ts`, `ts-node migrations/promotions.ts`.
+Then we need to run database table migrations. There are two tables - cart and items. Each table has it's migration that needs to be run: `ts-node migrations/cart.ts`, `ts-node migrations/items.ts`.
 
 **Note that only items table populates with mock data**
 
@@ -36,19 +36,6 @@ Every api can be found in `src/server.ts` file. There are their methods and need
 `localhost:300/:itemId/deleteItemFromCart.json` - deletes item from cart table;
 **itemId - number**
 
-### Promotions requests
-
-`localhost:300/getFree/:itemId/addItemDiscount.json` - adds `Buy one get one free` discount to promotions table;
-**itemId - number;**
-
-`localhost:300/percentage/:discountPrice/:discountPercentage/addPercentageDiscount.json` - adds `percentage discount from selected value`;
-**discountPrice - number, discountPercentage - number;**
-
-`localhost:300/getPromotions.json` - gets all available promotions from promotions table;
-
-`localhost:300/:promotionId/deletePromotion.json` - deletes selected promotion by id;
-**promotionId - number**
-
 ### Mixed requests
 
-`localhost:300/getCartTotal.json` - gets all cart items, checks and applies promotions and calculates cart and items totals.
+`localhost:300/getCartTotal.json` - gets joined cart and item table, checks and applies promotions and calculates cart and items totals.

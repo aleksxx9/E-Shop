@@ -1,6 +1,6 @@
 import mysql from "mysql2";
 import dotenv from "dotenv";
-import { Cart, Item, Promotion } from "./types";
+import { Cart, Item, JoinedCart } from "./types";
 
 dotenv.config();
 
@@ -35,6 +35,11 @@ export const queryGetCart = () => {
   return pool.query<Cart[]>("select * from cart");
 };
 
+export const queryGetCartTotal = () => {
+  return pool.query<JoinedCart[]>(
+    "select itemId, quantity, price from cart left join items on cart.itemId = items.id")
+}
+
 export const queryInsertCartItem = (id: number, quantity: number) => {
   return pool.query<Cart[]>(
     "insert into cart (itemId, quantity) values (?, ?)",
@@ -47,32 +52,4 @@ export const queryUpdateCartItem = (itemId: number, quantity: number) => {
     quantity,
     itemId,
   ]);
-};
-
-// Discount queries
-
-export const queryGetPromotions = () => {
-  return pool.query<Promotion[]>("select * from promotions");
-};
-
-export const queryDeletePromotion = (id: number) => {
-  return pool.query<Promotion[]>("delete from promotions where id = ?", [id]);
-};
-
-export const queryAddFreeDiscount = (type: string, itemId: number) => {
-  return pool.query<Promotion[]>(
-    "insert into promotions (promotionType, itemId) values (?, ?)",
-    [type, itemId]
-  );
-};
-
-export const queryAddPercentageDiscount = (
-  type: string,
-  price: number,
-  percentage: number
-) => {
-  return pool.query<Promotion[]>(
-    "insert into promotions (promotionType, promotionPercentage, promotionStartingPrice) values (?, ?, ?)",
-    [type, percentage, price]
-  );
 };

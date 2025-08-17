@@ -1,6 +1,7 @@
 import { Request } from "express";
-import { Cart, Discounts } from "./types";
+import { Cart } from "./types";
 import * as query from "./queries";
+import { itemPromotion, percentagePromotion } from "./promotions";
 
 const errorResponse = { status: 500, res: { Success: false } };
 const successResponse = { status: 200, res: { Success: true } };
@@ -55,62 +56,37 @@ export const getCart = async () => {
 
 export const getCartTotal = async () => {
   try {
-    const [cart] = await query.queryGetCart();
-    const [discounts] = await query.queryGetPromotions();
-    const cartItems: { [key: string]: number } = {};
+    const [cart] = await query.queryGetCartTotal();
+    const cartItems: { [id: string]: number } = {};
     const itemsTotal: { [id: string]: number } = {};
-    const promotions: Discounts = { getFree: [], percentage: [] };
-    let cartTotal = 0;
 
-    // Organises discounts by type
-    discounts.forEach((discount) => {
-      if (discount.promotionType === "getFree" && discount.itemId) {
-        promotions.getFree.push(discount.itemId);
-      } else if (
-        discount.promotionPercentage &&
-        discount.promotionStartingPrice
-      ) {
-        promotions.percentage.push({
-          percentage: discount.promotionPercentage,
-          price: discount.promotionStartingPrice,
-        });
-      }
-    });
+    let cartTotal = 0;
 
     cart.forEach((item) => {
       cartItems[item.itemId] = item.quantity;
     });
 
-    for await (const cartItem of Object.entries(cartItems)) {
-      const [key, quantity] = cartItem;
-      const [item] = await query.queryGetItem(Number(key));
-      let bonusQuantity = quantity;
+    // Defines discounts
+    const itemPromo = new itemPromotion(1);
+    const percentagePromo = new percentagePromotion({
+      price: 75,
+      percentage: 10,
+    });
 
-      if (!item[0]) {
-        throw new Error("Invalid cart items");
-      }
-      const trueItem = item[0];
+    const discountedItems = cart.map((item) => {
+      itemPromo.discount(item);
+      percentagePromo.discount(item);
 
-      // applying discounts
-      if (promotions.getFree.includes(item[0].id)) {
-        bonusQuantity = Math.ceil(bonusQuantity / 2);
-      }
+      return item;
+    });
 
-      if (promotions.percentage.length) {
-        promotions.percentage.forEach((promotion) => {
-          if (promotion.price <= trueItem.price) {
-            trueItem.price = Number((trueItem.price / 2).toFixed(2));
-          }
-        });
-      }
+    discountedItems.forEach((item) => {
+      const itemTotal = Number((item.price * item.quantity).toFixed(2));
 
-      // counting totals
-      const itemTotal = (trueItem.price * bonusQuantity).toFixed(2);
-      itemsTotal[trueItem.id] = Number(itemTotal);
-      cartTotal += Number(itemTotal);
-    }
+      cartTotal += itemTotal;
 
-    cartTotal = Number(cartTotal.toFixed(2));
+      itemsTotal[item.itemId] = itemTotal;
+    });
 
     return {
       status: 200,
@@ -174,104 +150,6 @@ export const addItemsToCart = async (req: Request) => {
     } else {
       await query.queryInsertCartItem(id, qty);
     }
-
-    return successResponse;
-  } catch (err: any) {
-    console.log(err.message);
-
-    return errorResponse;
-  }
-};
-
-// Discount requests
-export const getPromotions = async () => {
-  try {
-    const [promotions] = await query.queryGetPromotions();
-
-    return { status: 200, res: { promotions } };
-  } catch (err: any) {
-    console.log(err.message);
-
-    return errorResponse;
-  }
-};
-
-export const addDiscount = async (req: Request) => {
-  try {
-    const { type, itemId, discountPrice, discountPercentage } = req.params;
-    const id = Number(itemId);
-    const price = Number(discountPrice);
-    const percentage = Number(discountPercentage);
-
-    if (type === "getFree" && !id) {
-      throw new Error("Wrong data");
-    }
-
-    if (type === "percentage" && (!price || !percentage)) {
-      throw new Error("Wrong data");
-    }
-
-    if (type === "getFree") {
-      await query.queryAddFreeDiscount(type, id);
-    } else if (type === "percentage") {
-      await query.queryAddPercentageDiscount(type, price, percentage);
-    }
-    return errorResponse;
-  } catch (err: any) {
-    console.log(err.message);
-
-    return errorResponse;
-  }
-};
-export const addPercentageDiscount = async (req: Request) => {
-  try {
-    const { discountPrice, discountPercentage } = req.params;
-    const price = Number(discountPrice);
-    const percentage = Number(discountPercentage);
-
-    if (!price || !percentage) {
-      throw new Error("Wrong data");
-    }
-
-    await query.queryAddPercentageDiscount("percentage", price, percentage);
-
-    return successResponse;
-  } catch (err: any) {
-    console.log(err.message);
-
-    return errorResponse;
-  }
-};
-
-export const addItemDiscount = async (req: Request) => {
-  try {
-    const { itemId } = req.params;
-    const id = Number(itemId);
-
-    if (!id) {
-      throw new Error("Wrong data");
-    }
-
-    await query.queryAddFreeDiscount("getFree", id);
-
-    return successResponse;
-  } catch (err: any) {
-    console.log(err.message);
-
-    return errorResponse;
-  }
-};
-
-export const deleteDiscount = async (req: Request) => {
-  try {
-    const { promotionId } = req.params;
-    const id = Number(promotionId);
-
-    if (!id) {
-      throw new Error("Wrong data");
-    }
-
-    await query.queryDeletePromotion(id);
 
     return successResponse;
   } catch (err: any) {
