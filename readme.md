@@ -31,6 +31,7 @@ Every api can be found in `src/server.ts` file. There are their methods and need
 
 `localhost:300/:itemId/:quantity/addToCard.json` - adds item to cart table;
 **itemId - number, quantity - number;**
+
 **Note. there's no cart update request as add to card handles add, update, and delete if count falls below zero itself!**
 
 `localhost:300/:itemId/deleteItemFromCart.json` - deletes item from cart table;
