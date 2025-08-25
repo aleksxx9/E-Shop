@@ -1,4 +1,4 @@
-import { DiscountParams, JoinedCart } from "./types";
+import { PercentageDiscountParams, JoinedCart } from "./types";
 
 abstract class Promotion {
   abstract discount(item: JoinedCart): JoinedCart;
@@ -24,9 +24,9 @@ export class itemPromotion extends Promotion {
 }
 
 export class percentagePromotion extends Promotion {
-  discountParams: DiscountParams;
+  discountParams: PercentageDiscountParams;
 
-  constructor(discountParams: DiscountParams) {
+  constructor(discountParams: PercentageDiscountParams) {
     super();
     this.discountParams = discountParams;
   }

@@ -26,7 +26,7 @@ export interface JoinedCart extends RowDataPacket {
   quantity: number;
 }
 
-export interface DiscountParams {
+export interface PercentageDiscountParams {
   price: number;
   percentage: number;
 }
