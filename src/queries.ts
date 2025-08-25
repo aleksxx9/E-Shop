@@ -27,7 +27,7 @@ export const queryGetItem = (id: number) => {
 };
 
 export const queryGetItems = () => {
-  return pool.query("select * from items");
+  return pool.query<Item[]>("select * from items");
 };
 
 // Cart queries

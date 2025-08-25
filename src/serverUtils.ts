@@ -130,28 +130,36 @@ export const addItemsToCart = async (req: Request) => {
 
     const [cart] = await query.queryGetCart();
 
-    if (cart.length) {
-      const updateItem: Cart[] = cart.filter((item) => item.itemId === id);
-
-      if (updateItem[0]) {
-        const item: Cart = updateItem[0];
-        item.quantity += qty;
-
-        if (item.quantity > 0) {
-          await query.queryUpdateCartItem(item.itemId, item.quantity);
-        } else {
-          await query.queryDeleteCartItem(item.itemId);
-        }
-      } else if (qty > 0) {
-        await query.queryInsertCartItem(id, qty);
-      } else {
-        throw new Error("Incorrect data");
-      }
-    } else if (qty > 0) {
+    if (!cart.length && qty > 0) {
       await query.queryInsertCartItem(id, qty);
+
+      return successResponse;
+    } else if (!cart.length) {
+      throw new Error("Incorrect data");
     }
 
-    return successResponse;
+    const updateItem: Cart[] = cart.filter((item) => item.itemId === id);
+
+    if (!updateItem[0] && qty > 0) {
+      await query.queryInsertCartItem(id, qty);
+
+      return successResponse;
+    } else if (!updateItem[0]) {
+      throw new Error("Incorrect data");
+    }
+
+    const item: Cart = updateItem[0];
+    item.quantity += qty;
+
+    if (item.quantity > 0) {
+      await query.queryUpdateCartItem(item.itemId, item.quantity);
+
+      return successResponse;
+    } else {
+      await query.queryDeleteCartItem(item.itemId);
+
+      return successResponse;
+    }
   } catch (err: any) {
     console.log(err.message);
 
